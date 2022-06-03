@@ -46,6 +46,8 @@ int main(int argc, char **argv)
     int completerows;
     MPI_Status status;
     int x, y, i, k;
+    
+    print("hola q tal");
 	
 	//Generar matrices de manera mas optima
   	int* matrixA = NULL;
