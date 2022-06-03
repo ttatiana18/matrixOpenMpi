@@ -7,14 +7,14 @@
 #define DEBUG 0
 #define NUM_MAX 20
 
-int matrix_get_cell(int *matrix,int rows, int cols, int x, int y)
+int matrix_get_cell(int **matrix,int rows, int cols, int x, int y)
 {
     int valor_lineal;
     valor_lineal = (y * cols + x);
     return matrix[valor_lineal];
 }
 
-int matrix_set_cell(int *matrix,int rows,int cols, int x, int y, int val)
+int matrix_set_cell(int **matrix,int rows,int cols, int x, int y, int val)
 {
     int valor_lineal;
     valor_lineal = (y * cols + x);
@@ -27,7 +27,7 @@ int main(int argc, char **argv)
 	double time_spent = 0.0;
 	
 	int dimension = atoi(argv[1]);
-	
+	int x, y, i, k;
 	int localid, numprocs, namelen, rv;
 	double startwtime, endwtime;
     char processor_name[MPI_MAX_PROCESSOR_NAME];
@@ -173,8 +173,11 @@ int main(int argc, char **argv)
 		/* Aqui comienza lo que ejecuten procesos con
 	   rank distinto de cero, es decir los procesos
 	   hijo.  Asigno espacio para dos matrices.. */
-	    matrixA[i] = (int*)malloc(dimension * sizeof(int));
-	    matrixB[i] = (int*)malloc(dimension * sizeof(int));
+		for (i = 0; i < dimension; i++)
+	    {
+	    	matrixA[i] = (int*)malloc(dimension * sizeof(int));
+	        matrixB[i] = (int*)malloc(dimension * sizeof(int));
+	    }
 		if (matrixA == NULL || matrixB == NULL){
 		    MPI_Finalize();
 		    if (matrixA!=NULL) free(matrixA);
