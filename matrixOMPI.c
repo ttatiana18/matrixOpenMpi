@@ -205,13 +205,14 @@ int main(int argc, char **argv)
 							    dimension, x, k);
 				    suma += elem1 * elem2;
 				}
+				printf("%d",suma);
 				resultrow[x + 1] = suma;
 	    	}
 	    	// ya tengo calculado el renglon ahora se
 	    	// lo tengo que mandar al proceso padre
 		    resultrow[0] = i;
 		    MPI_Send(resultrow,dimension + 1,MPI_INT, 0, 1, MPI_COMM_WORLD);
-		    printf("%d",resultrow);
+		    
 		}
 	    if (matrixA!=NULL) free(matrixA);
 	    if (matrixB!=NULL) free(matrixB);
