@@ -1,0 +1,8 @@
+
+matrixOMPI:13248 terminated with signal 11 at PC=7f8dac339580 SP=7ffe07038ef0.  Backtrace:
+/lib/x86_64-linux-gnu/libc.so.6(+0x47580)[0x7f8dac339580]
+/lib/x86_64-linux-gnu/libc.so.6(atoi+0x14)[0x7f8dac335654]
+./matrixOMPI(+0x1512)[0x5581332df512]
+/lib/x86_64-linux-gnu/libc.so.6(+0x29d90)[0x7f8dac31bd90]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x80)[0x7f8dac31be40]
+./matrixOMPI(+0x12e5)[0x5581332df2e5]
