@@ -78,7 +78,7 @@ int main(int argc, char **argv)
 	
 		matrixA = malloc(dimension * dimension * sizeof(int));
 		matrixB = malloc(dimension * dimension * sizeof(int));
-		result = malloc(row * col * sizeof(int));
+		result = malloc(dimension * dimension * sizeof(int));
 		if (matrixA == NULL || matrixB == NULL || result == NULL ){
 		    MPI_Finalize();
 		    if (matrixA!=NULL) free(matrixA);
