@@ -144,7 +144,7 @@ int main(int argc, char **argv)
     } // AQUI termina la ejecucion del proceso padre
     else 
 	{
-		
+		printf("hpppppppppp");
 		/* Aqui comienza lo que ejecuten procesos con
 	   rank distinto de cero, es decir los procesos
 	   hijo.  Asigno espacio para dos matrices.. */
