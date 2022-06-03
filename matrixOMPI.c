@@ -7,7 +7,7 @@
 #define DEBUG 0
 #define NUM_MAX 20
 
-int matrix_get_cell(int **matrix,int rows, int cols, int x, int y)
+int* matrix_get_cell(int **matrix,int rows, int cols, int x, int y)
 {
     int valor_lineal;
     valor_lineal = (y * cols + x);
@@ -72,14 +72,6 @@ int main(int argc, char **argv)
 	    	matrixA[i] = (int*)malloc(dimension * sizeof(int));
 	        matrixB[i] = (int*)malloc(dimension * sizeof(int));
 	    }
-		if (matrixA == NULL || matrixB == NULL || result == NULL )
-		{
-		    MPI_Finalize();
-		    if (matrixA!=NULL) free(matrixA);
-		    if (matrixB!=NULL) free(matrixB);
-		    if (result!=NULL) free(result);
-		    exit(1);
-		}
 
 	  	for(i = 0; i < dimension; i++) 
 		{
@@ -178,12 +170,6 @@ int main(int argc, char **argv)
 	    	matrixA[i] = (int*)malloc(dimension * sizeof(int));
 	        matrixB[i] = (int*)malloc(dimension * sizeof(int));
 	    }
-		if (matrixA == NULL || matrixB == NULL){
-		    MPI_Finalize();
-		    if (matrixA!=NULL) free(matrixA);
-		    if (matrixB!=NULL) free(matrixB);
-		    exit(1);
-		}
 
 		/* En MPI, si mi rank no es 0, una llamada al
 	  	broadcast (notar el parametro 4 que es de 0)
