@@ -7,14 +7,23 @@
 #define DEBUG 0
 #define NUM_MAX 20
 
-int* matrix_get_cell(int **matrix,int rows, int cols, int x, int y)
+void randomatrix(int *matrix,int row, int col)
+{
+	srand(time(NULL));
+    int i;
+    for (i = 0; i < (row * col); i++) {
+		*(matrix + i) = rand()% (NUM_MAX + 1) + 0;
+    }
+
+}
+int matrix_get_cell(int *matrix,int rows, int cols, int x, int y)
 {
     int valor_lineal;
     valor_lineal = (y * cols + x);
     return matrix[valor_lineal];
 }
 
-int matrix_set_cell(int **matrix,int rows,int cols, int x, int y, int val)
+int matrix_set_cell(int *matrix,int rows,int cols, int x, int y, int val)
 {
     int valor_lineal;
     valor_lineal = (y * cols + x);
@@ -27,7 +36,7 @@ int main(int argc, char **argv)
 	double time_spent = 0.0;
 	
 	int dimension = atoi(argv[1]);
-	int x, y, i, k;
+	
 	int localid, numprocs, namelen, rv;
 	double startwtime, endwtime;
     char processor_name[MPI_MAX_PROCESSOR_NAME];
@@ -36,11 +45,12 @@ int main(int argc, char **argv)
     int elem1, elem2, suma;
     int completerows;
     MPI_Status status;
+    int x, y, i, k;
 	
 	//Generar matrices de manera mas optima
-  	int* matrixA[dimension];
-  	int* matrixB[dimension];
-  	int* result[dimension];
+  	int* matrixA = NULL;
+  	int* matrixB = NULL;
+  	int* result = NULL;
   	
   	// Inicializar mpi
     MPI_Init(&argc, &argv);
@@ -58,7 +68,7 @@ int main(int argc, char **argv)
     if (localid == 0) 
 	{
 		int i,j;
-		srand(time(NULL));
+		
 
 		if(!dimension)
 		{
@@ -66,44 +76,19 @@ int main(int argc, char **argv)
 	  		scanf("%d", &dimension);
 		}
 	
-		for (i = 0; i < dimension; i++)
-	    {
-	    	result[i] = (int*)malloc(dimension * sizeof(int));
-	    	matrixA[i] = (int*)malloc(dimension * sizeof(int));
-	        matrixB[i] = (int*)malloc(dimension * sizeof(int));
-	    }
-
-	  	for(i = 0; i < dimension; i++) 
-		{
-		    for(j = 0; j < dimension; j++)
-		    {
-		        matrixA[i][j]=rand()% (NUM_MAX + 1) + 0; 
-				#if DEBUG
-					printf("%d  ",matrixA[i][j]);     
-				#endif  
-		    }
-			#if DEBUG
-		    	printf("\n");
-			#endif
+		matrixA = malloc(dimension * dimension * sizeof(int));
+		matrixB = malloc(dimension * dimension * sizeof(int));
+		result = malloc(row * col * sizeof(int));
+		if (matrixA == NULL || matrixB == NULL || result == NULL ){
+		    MPI_Finalize();
+		    if (matrixA!=NULL) free(matrixA);
+		    if (matrixB!=NULL) free(matrixB);
+		    if (result!=NULL) free(result);
+		    exit(1);
 		}
-		#if DEBUG
-			printf("\n");
-			printf("------------------\n");
-		#endif
 		
-	  	for(i = 0; i < dimension; i++)
-		{
-		    for(j = 0; j < dimension; j++)
-		    {
-		        matrixB[i][j]=rand()% (NUM_MAX + 1) + 0;
-				#if DEBUG     
-					printf("%d  ",matrixB[i][j]);   
-				#endif           
-		    }
-			#if DEBUG
-		    	printf("\n");
-			#endif
-		}
+		randomatrix(matrixA, dimension, dimension);
+		randomatrix(matrixB, dimension, dimension);
 
 		/*Determinar el momento de inicio de ejecución,
 		   aquí medimos cuando comenzamos realmente a
@@ -147,17 +132,14 @@ int main(int argc, char **argv)
 		// terminamos el cálculo! anotar tiempo al
 		// terminar..
 		endwtime = MPI_Wtime();
-	
-		//matrix_print(matrix3, row, col);
+		
+		time_spent = endwtime - startwtime;
 	
  		printf("%d;%f\n" , dimension, time_spent);
  	
-	  	for (i = 0; i < dimension; i++)
-	  	{
-	        free(result[i]);
-	        free(matrixA[i]);
-	        free(matrixB[i]);
-	    }
+		if (matrixA!=NULL) free(matrixA);
+		if (matrixB!=NULL) free(matrixB);
+		if (result!=NULL) free(result);
 
     } // AQUI termina la ejecucion del proceso padre
     else 
@@ -165,11 +147,14 @@ int main(int argc, char **argv)
 		/* Aqui comienza lo que ejecuten procesos con
 	   rank distinto de cero, es decir los procesos
 	   hijo.  Asigno espacio para dos matrices.. */
-		for (i = 0; i < dimension; i++)
-	    {
-	    	matrixA[i] = (int*)malloc(dimension * sizeof(int));
-	        matrixB[i] = (int*)malloc(dimension * sizeof(int));
-	    }
+		matrixA = malloc(dimension * dimension * sizeof(int));
+		matrixB = malloc(dimension * dimension * sizeof(int));
+		if (matrixA == NULL || matrixB == NULL){
+		    MPI_Finalize();
+		    if (matrixA!=NULL) free(matrixA);
+		    if (matrixB!=NULL) free(matrixB);
+		    exit(1);
+		}
 
 		/* En MPI, si mi rank no es 0, una llamada al
 	  	broadcast (notar el parametro 4 que es de 0)
@@ -226,6 +211,9 @@ int main(int argc, char **argv)
 		    resultrow[0] = i;
 		    MPI_Send(resultrow,dimension + 1,MPI_INT, 0, 1, MPI_COMM_WORLD);
 		}
+	    if (matrixA!=NULL) free(matrixA);
+	    if (matrixB!=NULL) free(matrixB);
+	    if (result!=NULL) free(result);	
     } // termina seccion de calculo proceso hijo
 
     // Terminamos la sesión de MPI
