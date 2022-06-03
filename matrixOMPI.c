@@ -46,8 +46,6 @@ int main(int argc, char **argv)
     int completerows;
     MPI_Status status;
     int x, y, i, k;
-    
-    printf("hola q tal");
 	
 	//Generar matrices de manera mas optima
   	int* matrixA = NULL;
@@ -146,6 +144,7 @@ int main(int argc, char **argv)
     } // AQUI termina la ejecucion del proceso padre
     else 
 	{
+		
 		/* Aqui comienza lo que ejecuten procesos con
 	   rank distinto de cero, es decir los procesos
 	   hijo.  Asigno espacio para dos matrices.. */
@@ -212,6 +211,7 @@ int main(int argc, char **argv)
 	    	// lo tengo que mandar al proceso padre
 		    resultrow[0] = i;
 		    MPI_Send(resultrow,dimension + 1,MPI_INT, 0, 1, MPI_COMM_WORLD);
+		    printf("%d",resultrow);
 		}
 	    if (matrixA!=NULL) free(matrixA);
 	    if (matrixB!=NULL) free(matrixB);
