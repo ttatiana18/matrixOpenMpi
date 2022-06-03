@@ -47,7 +47,7 @@ int main(int argc, char **argv)
     MPI_Status status;
     int x, y, i, k;
     
-    print("hola q tal");
+    printf("hola q tal");
 	
 	//Generar matrices de manera mas optima
   	int* matrixA = NULL;
