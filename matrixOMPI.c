@@ -226,9 +226,6 @@ int main(int argc, char **argv)
 		    resultrow[0] = i;
 		    MPI_Send(resultrow,dimension + 1,MPI_INT, 0, 1, MPI_COMM_WORLD);
 		}
-	    if (matrixA!=NULL) free(matrixA);
-	    if (matrixB!=NULL) free(matrixB);
-	    if (result!=NULL) free(result);	
     } // termina seccion de calculo proceso hijo
 
     // Terminamos la sesión de MPI
